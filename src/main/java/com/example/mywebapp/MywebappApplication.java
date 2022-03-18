@@ -1,5 +1,6 @@
 package com.example.mywebapp;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.repository.CrudRepository;
@@ -62,6 +63,8 @@ class Coffee{
 
 interface CoffeeRepository extends CrudRepository<Coffee, String>{}
 
+
+
 @Component
 class DataLoader{
 	private CoffeeRepository coffeeRepository;
@@ -119,4 +122,39 @@ class RestApiDemoController{
 		coffeeRepository.deleteById(id);
 	}
 
+}
+
+
+@RestController
+@RequestMapping("/greetings")
+class GreetingController{
+
+	@Value("${greeting-name: Mirage}")
+	private String name;
+
+	@GetMapping
+	String getGreeting(){
+		return name;
+	}
+}
+
+
+class Greeting{
+	private String name;
+	private String coffee;
+
+	public String getName(){
+		return this.name;
+	}
+	public String getCoffee(){
+		return this.coffee;
+	}
+
+	public void setName(String name){
+		this.name = name;
+	}
+
+	public void setCoffee(String coffee){
+		this.coffee = coffee;
+	}
 }
