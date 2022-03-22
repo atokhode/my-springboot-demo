@@ -208,7 +208,7 @@ class DroidController{
 	}
 
 	@GetMapping
-	String getDes(){
-		return droid.getDescription() + droid.getId();
+	String getIdAndDescription(){
+		return droid.getId()+" " + droid.getDescription();
 	}
 }
