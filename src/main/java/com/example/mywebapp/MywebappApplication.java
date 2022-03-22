@@ -3,6 +3,8 @@ package com.example.mywebapp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class MywebappApplication {
 
 	public static void main(String[] args) {
@@ -126,29 +130,31 @@ class RestApiDemoController{
 
 
 @RestController
-@RequestMapping("/greetings")
+@RequestMapping("/greeting")
 class GreetingController{
 
 	@Value("${greeting-name: Mirage}")
 	private String name;
 
+	@Value("${greeting-coffee: ${greeting-name} is drinking Cafe Gandor}")
+	private String coffee;
+
 	@GetMapping
 	String getGreeting(){
 		return name;
 	}
+
+	@GetMapping("/coffee")
+	String getCoffee(){
+		return coffee;
+	}
+
 }
 
-
+@ConfigurationProperties(prefix = "greeting")
 class Greeting{
 	private String name;
 	private String coffee;
-
-	public String getName(){
-		return this.name;
-	}
-	public String getCoffee(){
-		return this.coffee;
-	}
 
 	public void setName(String name){
 		this.name = name;
@@ -156,5 +162,13 @@ class Greeting{
 
 	public void setCoffee(String coffee){
 		this.coffee = coffee;
+	}
+
+	public String getName(){
+		return name;
+	}
+
+	public String getCoffee(){
+		return coffee;
 	}
 }
