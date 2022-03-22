@@ -1,10 +1,10 @@
 package com.example.mywebapp;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +25,12 @@ public class MywebappApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MywebappApplication.class, args);
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "droid")
+	Droid createDroid(){
+		return new Droid();
 	}
 
 }
@@ -133,22 +139,21 @@ class RestApiDemoController{
 @RequestMapping("/greeting")
 class GreetingController{
 
-	@Value("${greeting-name: Mirage}")
-	private String name;
+	private final Greeting greeting;
 
-	@Value("${greeting-coffee: ${greeting-name} is drinking Cafe Gandor}")
-	private String coffee;
+	public GreetingController(Greeting greeting){
+		this.greeting = greeting;
+	}
 
 	@GetMapping
 	String getGreeting(){
-		return name;
+		return greeting.getName();
 	}
 
 	@GetMapping("/coffee")
-	String getCoffee(){
-		return coffee;
+	String getNameAndCoffee(){
+		return greeting.getCoffee();
 	}
-
 }
 
 @ConfigurationProperties(prefix = "greeting")
@@ -170,5 +175,40 @@ class Greeting{
 
 	public String getCoffee(){
 		return coffee;
+	}
+}
+
+class Droid{
+	private String id, description;
+
+	void setId(String id){
+		this.id = id;
+	}
+
+	void setDescription(String description){
+		this.description = description;
+	}
+
+	String getId(){
+		return id;
+	}
+
+	String getDescription(){
+		return description;
+	}
+}
+
+@RestController
+@RequestMapping("/droid")
+class DroidController{
+	private final Droid droid;
+
+	public DroidController(Droid droid){
+		this.droid = droid;
+	}
+
+	@GetMapping
+	String getDes(){
+		return droid.getDescription() + droid.getId();
 	}
 }
